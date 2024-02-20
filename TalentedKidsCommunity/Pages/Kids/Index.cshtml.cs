@@ -29,7 +29,7 @@ namespace TalentedKidsCommunity.Pages.Kids
 
         public IList<Kid> Kids { get; set; } = default!;
 
-        public async Task OnGetAsync(string sortOrder)
+        public async Task OnGetAsync(string sortOrder, string searchString)
         {
 
 
@@ -37,6 +37,8 @@ namespace TalentedKidsCommunity.Pages.Kids
             NameSort = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             DateSort = sortOrder == "date-asc" ? "date_desc" : "date-asc";
             AgeSort = sortOrder == "age-asc" ? "age_desc" : "age-asc";
+
+            CurrentFilter = searchString;
 
             IQueryable<Kid> kidsIQ = from k in _context.Kids
                                      select k;
@@ -61,6 +63,12 @@ namespace TalentedKidsCommunity.Pages.Kids
                 default:
                     kidsIQ = kidsIQ.OrderBy(k => k.LastName);
                     break;
+            }
+
+            // searching by last or first names
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                kidsIQ = kidsIQ.Where(k => k.LastName.Contains(searchString) || k.FirstName.Contains(searchString));
             }
 
 
