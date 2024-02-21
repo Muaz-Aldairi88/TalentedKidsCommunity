@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +15,14 @@ namespace TalentedKidsCommunity.Pages.Kids
     {
         private readonly TalentedKidsCommunity.Data.CenterContext _context;
 
-        public IndexModel(TalentedKidsCommunity.Data.CenterContext context)
+        private readonly IConfiguration _configuration;
+
+        public IndexModel(TalentedKidsCommunity.Data.CenterContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
+
 
         // sorting and filtering properties
         public string NameSort { get; set; }
@@ -26,10 +31,10 @@ namespace TalentedKidsCommunity.Pages.Kids
         public string CurrentFilter { get; set; }
         public string CurrentSort { get; set; }
 
+        // pagination functionallity
+        public PaginatedList<Kid> Kids { get; set; }
 
-        public IList<Kid> Kids { get; set; } = default!;
-
-        public async Task OnGetAsync(string sortOrder, string searchString)
+        public async Task OnGetAsync(string sortOrder, string searchString, string currentFilter, int? pageIndex)
         {
 
 
@@ -37,6 +42,18 @@ namespace TalentedKidsCommunity.Pages.Kids
             NameSort = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             DateSort = sortOrder == "date-asc" ? "date_desc" : "date-asc";
             AgeSort = sortOrder == "age-asc" ? "age_desc" : "age-asc";
+
+            CurrentSort = sortOrder;
+
+            //resets page index to 1 when there's a new search string.
+            if (searchString != null)
+            {
+                pageIndex = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
 
             CurrentFilter = searchString;
 
@@ -71,8 +88,9 @@ namespace TalentedKidsCommunity.Pages.Kids
                 kidsIQ = kidsIQ.Where(k => k.LastName.Contains(searchString) || k.FirstName.Contains(searchString));
             }
 
-
-            Kids = await kidsIQ.AsNoTracking().ToListAsync();
+            var pageSize = _configuration.GetValue("PageSize", 6);
+            Kids = await PaginatedList<Kid>.CreateAsync(
+                kidsIQ.AsNoTracking(), pageIndex ?? 1, pageSize);
         }
     }
 }

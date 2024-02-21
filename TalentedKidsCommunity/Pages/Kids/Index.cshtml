@@ -10,7 +10,7 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
-@* Search form *@
+
 <form asp-page="./Index" method="get"> @* using http get method to allow passing the form data with query string not the message body ,thus enables users to bookmark *@ the URL
     <div class="form-actions no-color">
         <p>
@@ -25,7 +25,7 @@
     <thead>
         <tr>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort">
+                <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort" asp-route-currentFilter="@Model.CurrentFilter">
                     @* LastName column heading hyperlinks *@
                     @Html.DisplayNameFor(model => model.Kids[0].LastName)
                 </a>
@@ -34,13 +34,13 @@
                 @Html.DisplayNameFor(model => model.Kids[0].FirstName)
             </th>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.AgeSort">
+                <a asp-page="./Index" asp-route-sortOrder="@Model.AgeSort" asp-route-currentFilter="@Model.CurrentFilter">
                     @* Age column heading hyperlinks *@
                     @Html.DisplayNameFor(model => model.Kids[0].Age)
                 </a>
             </th>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort">
+                <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort" asp-route-currentFilter="@Model.CurrentFilter">
                     @* EnrollmentDate column heading hyperlinks *@
                     @Html.DisplayNameFor(model => model.Kids[0].EnrollmentDate)
                 </a>
@@ -73,3 +73,23 @@
         }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.Kids.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Kids.HasNextPage ? "disabled" : "";
+}
+
+<a asp-page="./Index"
+   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-pageIndex="@(Model.Kids.PageIndex - 1)"
+   asp-route-currentFilter="@Model.CurrentFilter"
+   class="btn btn-primary @prevDisabled">
+    Previous
+</a>
+<a asp-page="./Index"
+   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-pageIndex="@(Model.Kids.PageIndex + 1)"
+   asp-route-currentFilter="@Model.CurrentFilter"
+   class="btn btn-primary @nextDisabled">
+    Next
+</a>
