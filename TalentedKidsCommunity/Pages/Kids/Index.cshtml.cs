@@ -25,7 +25,8 @@ namespace TalentedKidsCommunity.Pages.Kids
 
 
         // sorting and filtering properties
-        public string NameSort { get; set; }
+        public string FirstNameSort { get; set; }
+        public string LastNameSort { get; set; }
         public string DateSort { get; set; }
         public string AgeSort { get; set; }
         public string CurrentFilter { get; set; }
@@ -39,7 +40,8 @@ namespace TalentedKidsCommunity.Pages.Kids
 
 
             // sorting functionality by last name, age , and enrollment date
-            NameSort = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            LastNameSort = String.IsNullOrEmpty(sortOrder) ? "lastname_desc" : "";
+            FirstNameSort = sortOrder == "firstname-asc" ? "firstname_desc" : "firstname-asc";
             DateSort = sortOrder == "date-asc" ? "date_desc" : "date-asc";
             AgeSort = sortOrder == "age-asc" ? "age_desc" : "age-asc";
 
@@ -64,6 +66,12 @@ namespace TalentedKidsCommunity.Pages.Kids
             {
                 case "name_desc":
                     kidsIQ = kidsIQ.OrderByDescending(k => k.LastName);
+                    break;
+                case "firstname-asc":
+                    kidsIQ = kidsIQ.OrderBy(k => k.FirstName);
+                    break;
+                case "firstname_desc":
+                    kidsIQ = kidsIQ.OrderByDescending(k => k.FirstName);
                     break;
                 case "date-asc":
                     kidsIQ = kidsIQ.OrderBy(k => k.EnrollmentDate);
