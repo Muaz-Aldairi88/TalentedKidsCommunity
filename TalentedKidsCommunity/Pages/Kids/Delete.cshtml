@@ -2,14 +2,13 @@
 @model TalentedKidsCommunity.Pages.Kids.DeleteModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Unenroll a kid";
 }
 
-<h1>Delete</h1>
+<h1>Unenroll a kid</h1>
 <p class="text-danger">@Model.ErrorMessage</p>
-<h3>Are you sure you want to delete this?</h3>
+<h3>Are you sure you want to unroll @Model.Kid.FirstName?</h3>
 <div>
-    <h4>Kid</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -40,7 +39,7 @@
     
     <form method="post">
         <input type="hidden" asp-for="Kid.KidID" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <input type="submit" value="Unenroll" class="btn btn-danger" /> |
         <a asp-page="./Index">Back to List</a>
     </form>
 </div>

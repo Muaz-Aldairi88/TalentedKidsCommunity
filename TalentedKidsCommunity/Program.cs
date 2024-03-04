@@ -30,7 +30,6 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
 
     var context = services.GetRequiredService<CenterContext>();
-    context.Database.EnsureCreated();
     SeedDb.Seed(context);
 }
 
